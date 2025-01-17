@@ -20,7 +20,7 @@ app.MapGet("/api/animals", (IAnimalService animalService) =>
     return Results.Ok(animalService.GetAnimals());
 });
 
-app.MapGet("/api/animals{id}", (int id, IAnimalService animalService) =>
+app.MapGet("/api/animals/{id}", (int id, IAnimalService animalService) =>
 {
     var animal = animalService.GetAnimal(id);
     if (animal == null) return Results.NotFound();
