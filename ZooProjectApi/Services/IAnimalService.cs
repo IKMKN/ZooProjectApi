@@ -1,6 +1,6 @@
 ﻿using ZooProjectApi.Models;
 
-namespace ZooProjectApi.Sevices;
+namespace ZooProjectApi.Services;
 
 public interface IAnimalService
 {

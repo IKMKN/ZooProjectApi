@@ -1,6 +1,9 @@
-﻿namespace ZooProjectApi.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ZooProjectApi.Models;
 
 public class FeedRequest
 {
-    public int AmountFood { get; set; }
+    [JsonPropertyName("foodAmount")]
+    public int FoodAmount { get; set; }
 }

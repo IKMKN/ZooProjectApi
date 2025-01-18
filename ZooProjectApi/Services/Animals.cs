@@ -1,14 +1,14 @@
 ﻿using System.Text.Json;
 using ZooProjectApi.Models;
 
-namespace ZooProjectApi.Sevices;
+namespace ZooProjectApi.Services;
 
-public class AnimalService : IAnimalService
+public class Animals : IAnimalService
 {
     private List<Animal> _animals = new List<Animal>();
     private int _animalId = 1;
     private string _saveAnimals = "saveAnimals.json";
-    public AnimalService()
+    public Animals()
     {
         LoadFromFile();
     }
@@ -17,25 +17,27 @@ public class AnimalService : IAnimalService
     {
         animal.Id = _animalId++;
         _animals.Add(animal);
-        SaveFromFile();
+        SaveToFile();
         return animal;
     }
 
     public void DeleteAnimal(int id)
     {
         Animal? animal = _animals.FirstOrDefault(a => a.Id == id);
-        if (animal != null) _animals.Remove(animal);
-        SaveFromFile();
+        if (animal is not null) 
+            _animals.Remove(animal);
+        SaveToFile();
     }
 
     public bool FeedAnimal(int id, int amountFood)
     {
         Animal? animal = _animals.FirstOrDefault(a => a.Id == id);
-        if (animal != null)
+        if (animal is not null)
         {
             animal.Energy += amountFood;
-            if (animal.Energy > 100) animal.Energy = 100;
-            SaveFromFile();
+            if (animal.Energy > 100) 
+                animal.Energy = 100;
+            SaveToFile();
             return true;
         }
         return false;
@@ -57,10 +59,11 @@ public class AnimalService : IAnimalService
         {
             var json = File.ReadAllText(_saveAnimals);
             _animals = JsonSerializer.Deserialize<List<Animal>>(json);
-            if (_animals.Count > 0) _animalId = _animals.Max(a => a.Id) + 1;
+            if (_animals.Count > 0) 
+                _animalId = _animals.Max(a => a.Id) + 1;
         }
     }
-    public void SaveFromFile()
+    private void SaveToFile()
     {
         var json = JsonSerializer.Serialize(_animals);
         File.WriteAllText(_saveAnimals, json);
