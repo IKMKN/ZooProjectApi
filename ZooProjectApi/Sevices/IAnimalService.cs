@@ -10,3 +10,4 @@ public interface IAnimalService
     Animal? FeedAnimal(int id, int amountFood);
     void DeleteAnimal(int id);
 }
+
