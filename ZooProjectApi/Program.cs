@@ -42,7 +42,7 @@ app.MapPut("/api/animals/{id}/feed", (int id, FeedRequest feedRequest, IAnimalSe
     if (feedRequest.AmountFood > 100 || feedRequest.AmountFood < 0) return Results.BadRequest();
     var animal = animalService.FeedAnimal(id, feedRequest.AmountFood);
     if (animal == null) return Results.NotFound();
-    return Results.Ok(animal);
+    return Results.Ok();
 });
 
 app.MapDelete("/api/animals/{id}", (int id, IAnimalService animalService) =>
