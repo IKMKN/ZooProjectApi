@@ -29,11 +29,12 @@ app.MapGet("/api/animals/{id}", (int id, IAnimalService animalService) =>
 
 });
 
-app.MapPost("/api/animals", (Animal animal, IAnimalService animalService) =>
+app.MapPost("/api/animals", (AddAnimalRequest animal, IAnimalService animalService) =>
 {
     if (string.IsNullOrEmpty(animal.Name)) return Results.BadRequest();
     if (string.IsNullOrEmpty(animal.Type)) return Results.BadRequest();
-    var addedAnimal = animalService.AddAnimal(animal);
+    Animal addedAnimal = new Animal(animal.Name, animal.Type);
+    addedAnimal = animalService.AddAnimal(addedAnimal);
     return Results.Created($"/animals/{addedAnimal.Id}", addedAnimal);
 });
 
@@ -41,7 +42,7 @@ app.MapPut("/api/animals/{id}/feed", (int id, FeedRequest feedRequest, IAnimalSe
 {
     if (feedRequest.AmountFood > 100 || feedRequest.AmountFood < 0) return Results.BadRequest();
     var animal = animalService.FeedAnimal(id, feedRequest.AmountFood);
-    if (animal == null) return Results.NotFound();
+    if (!animal) return Results.NotFound();
     return Results.Ok();
 });
 

@@ -28,7 +28,7 @@ public class AnimalService : IAnimalService
         SaveFromFile();
     }
 
-    public Animal? FeedAnimal(int id, int amountFood)
+    public bool FeedAnimal(int id, int amountFood)
     {
         Animal? animal = _animals.FirstOrDefault(a => a.Id == id);
         if (animal != null)
@@ -36,9 +36,9 @@ public class AnimalService : IAnimalService
             animal.Energy += amountFood;
             if (animal.Energy > 100) animal.Energy = 100;
             SaveFromFile();
-            return animal;
+            return true;
         }
-        return null;
+        return false;
     }
 
     public Animal? GetAnimal(int id)
