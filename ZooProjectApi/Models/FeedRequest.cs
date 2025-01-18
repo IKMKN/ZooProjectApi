@@ -4,3 +4,4 @@ public class FeedRequest
 {
     public int AmountFood { get; set; }
 }
+

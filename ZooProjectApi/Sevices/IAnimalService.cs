@@ -10,3 +10,4 @@ public interface IAnimalService
     bool FeedAnimal(int id, int amountFood);
     void DeleteAnimal(int id);
 }
+

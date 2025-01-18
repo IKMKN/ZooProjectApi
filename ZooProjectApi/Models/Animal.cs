@@ -12,3 +12,4 @@ public class Animal
     public string Type { get; set; }
     public int Energy { get; set; } = 100;
 }
+

@@ -54,3 +54,4 @@ app.MapDelete("/api/animals/{id}", (int id, IAnimalService animalService) =>
 });
 
 app.Run();
+
