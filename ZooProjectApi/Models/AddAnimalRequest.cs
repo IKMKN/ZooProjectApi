@@ -1,8 +1,11 @@
-﻿namespace ZooProjectApi.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ZooProjectApi.Models;
+
+public class AddAnimalRequest
 {
-    public class AddAnimalRequest
-    {
-        public string Name { get; set; }
-        public string Type { get; set; }
-    }
+    [Required]
+    public string Name { get; set; }
+    [Required]
+    public string Type { get; set; }
 }

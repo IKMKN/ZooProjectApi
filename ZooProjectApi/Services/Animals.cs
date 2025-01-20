@@ -5,67 +5,74 @@ namespace ZooProjectApi.Services;
 
 public class Animals : IAnimalService
 {
-    private List<Animal> _animals = new List<Animal>();
-    private int _animalId = 1;
-    private string saveFileName = "saveAnimals.json";
-    public Animals()
-    {
-        LoadFromFile();
-    }
+    private List<Animal> _animals = new();
+    private const string _saveFileName = "saveAnimals.json";
+    private static readonly object _lock = new();
 
     public Animal AddAnimal(Animal animal)
     {
-        animal.Id = _animalId++;
-        _animals.Add(animal);
-        SaveToFile();
-        return animal;
+        lock (_lock)
+        {
+            LoadFromFile();
+            if (_animals.Count < 1)
+                animal.Id = 1;
+            else
+                animal.Id = _animals.Max(a => a.Id) + 1;
+            _animals.Add(animal);
+            SaveToFile();
+            return animal;
+        }
     }
-
-    public void DeleteAnimal(int id)
+    public bool DeleteAnimal(int id)
     {
-        Animal? animal = _animals.FirstOrDefault(a => a.Id == id);
+        LoadFromFile();
+        var animal = _animals.FirstOrDefault(a => a.Id == id);
         if (animal is not null)
+        {
             _animals.Remove(animal);
-        SaveToFile();
+            SaveToFile();
+            return true;
+        }
+        return false;
     }
-
     public bool FeedAnimal(int id, int amountFood)
     {
-        Animal? animal = _animals.FirstOrDefault(a => a.Id == id);
+        LoadFromFile();
+        var animal = _animals.FirstOrDefault(a => a.Id == id);
         if (animal is not null)
         {
             animal.Energy += amountFood;
-            if (animal.Energy > 100) 
+            if (animal.Energy > 100)
                 animal.Energy = 100;
             SaveToFile();
             return true;
         }
         return false;
     }
-
     public Animal? GetAnimal(int id)
     {
+        LoadFromFile();
         return _animals.FirstOrDefault(a => a.Id == id);
     }
-
     public List<Animal> GetAnimals()
     {
+        LoadFromFile();
         return _animals;
     }
-
     private void LoadFromFile()
     {
-        if (File.Exists(saveFileName))
+        lock (_lock)
         {
-            var json = File.ReadAllText(saveFileName);
-            _animals = JsonSerializer.Deserialize<List<Animal>>(json);
-            if (_animals.Count > 0) 
-                _animalId = _animals.Max(a => a.Id) + 1;
+            if (File.Exists(_saveFileName))
+            {
+                var json = File.ReadAllText(_saveFileName);
+                _animals = JsonSerializer.Deserialize<List<Animal>>(json) ?? [];
+            }
         }
     }
     private void SaveToFile()
     {
         var json = JsonSerializer.Serialize(_animals);
-        File.WriteAllText(saveFileName, json);
+        File.WriteAllText(_saveFileName, json);
     }
 }
