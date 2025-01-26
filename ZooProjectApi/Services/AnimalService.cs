@@ -3,10 +3,10 @@ using ZooProjectApi.Models;
 
 namespace ZooProjectApi.Services;
 
-public class Animals : IAnimalService
+public class AnimalService : IAnimalService
 {
     private List<Animal> _animals = new();
-    private const string _saveFileName = "saveAnimals.json";
+    private const string _saveFileName = "Animals.json";
     private static readonly object _lock = new();
 
     public Animal AddAnimal(Animal animal)

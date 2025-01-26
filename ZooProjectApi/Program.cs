@@ -3,7 +3,7 @@ using ZooProjectApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IAnimalService, Animals>();
+builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

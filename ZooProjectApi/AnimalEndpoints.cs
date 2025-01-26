@@ -27,7 +27,11 @@ public static class AnimalEndpoints
     }
     private static IResult AddAnimal(AddAnimalRequest animal, IAnimalService animalService)
     {
-        var addedAnimal = animalService.AddAnimal(new Animal(animal.Name, animal.Type));
+        var addedAnimal = animalService.AddAnimal(new Animal
+        {
+            Name = animal.Name,
+            Type = animal.Type
+        });
         return Results.Created($"/animals/{addedAnimal.Id}", addedAnimal);
     }
     private static IResult FeedAnimal(int id, FeedRequest feedRequest, IAnimalService animalService)
