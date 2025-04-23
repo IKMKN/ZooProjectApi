@@ -4,9 +4,9 @@ namespace ZooProjectApi.Services;
 
 public interface IAnimalService
 {
-    List<Animal> GetAnimals();
-    Animal? GetAnimal(int id);
-    Animal AddAnimal(Animal animal);
-    bool FeedAnimal(int id, int amountFood);
-    bool DeleteAnimal(int id);
+    Task<List<Animal>> GetAnimalsAsync();
+    Task <Animal> GetAnimalAsync(Guid id);
+    Task<Animal> AddAnimalAsync(AddAnimalRequest animalRequest);
+    Task FeedAnimalAsync(Guid id, int amountFood);
+    Task DeleteAnimalAsync(Guid id);
 }
