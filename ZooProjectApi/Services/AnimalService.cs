@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ZooProjectApi.Contracts;
 using ZooProjectApi.Models;
 
 namespace ZooProjectApi.Services;
@@ -12,7 +13,7 @@ public class AnimalService : IAnimalService
         context = animalDbContext;
     }
 
-    public async Task<Animal> AddAnimalAsync(AddAnimalRequest animalRequest)
+    public async Task<Animal> AddAnimalAsync(AnimalRequest animalRequest)
     {
         var animal = (new Animal
         {

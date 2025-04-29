@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ZooProjectApi.Models;
+namespace ZooProjectApi.Contracts;
 
-public class AddAnimalRequest
+public class AnimalRequest
 {
     [Required]
     public string Name { get; set; }

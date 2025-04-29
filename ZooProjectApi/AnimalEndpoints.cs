@@ -1,4 +1,4 @@
-﻿using ZooProjectApi.Models;
+﻿using ZooProjectApi.Contracts;
 using ZooProjectApi.Services;
 
 namespace ZooProjectApi;
@@ -25,7 +25,7 @@ public static class AnimalEndpoints
         var animal = await animalService.GetAnimalAsync(id);
         return Results.Ok(animal);
     }
-    private static async Task<IResult> AddAnimalAsync(AddAnimalRequest animalRequest, IAnimalService animalService)
+    private static async Task<IResult> AddAnimalAsync(AnimalRequest animalRequest, IAnimalService animalService)
     {
         var animal = await animalService.AddAnimalAsync(animalRequest);
         return Results.Created($"/animals/{animal.Id}", animal);

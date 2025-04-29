@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ZooProjectApi.Models;
+namespace ZooProjectApi.Contracts;
 
 public class FeedRequest
 {

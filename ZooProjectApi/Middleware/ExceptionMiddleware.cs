@@ -5,7 +5,7 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate Next;
 
-    public ExceptionMiddleware(RequestDelegate next)
+    public ExceptionMiddleware(RequestDelegate next , ILogger<ExceptionMiddleware> logger)
     {
         Next = next;
     }
