@@ -1,13 +1,18 @@
 using ZooProjectApi;
+using ZooProjectApi.Middleware;
 using ZooProjectApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAnimalService, AnimalService>();
+builder.Services.AddDbContext<AnimalDbContext>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -15,6 +20,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapAnimalEndpionts();
+app.MapAnimalEndpoints();
 
 app.Run();

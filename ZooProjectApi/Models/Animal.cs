@@ -4,8 +4,8 @@ namespace ZooProjectApi.Models;
 
 public class Animal
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public required string Name { get; set; }
     public required string Type { get; set; }
-    public int Energy { get; set; } = 100;
+    public int Energy { get; set; } = 50;
 }

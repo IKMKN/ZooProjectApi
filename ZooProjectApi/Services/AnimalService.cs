@@ -1,78 +1,59 @@
-﻿using System.Text.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using ZooProjectApi.Contracts;
 using ZooProjectApi.Models;
 
 namespace ZooProjectApi.Services;
 
 public class AnimalService : IAnimalService
 {
-    private List<Animal> _animals = new();
-    private const string _saveFileName = "Animals.json";
-    private static readonly object _lock = new();
+    private readonly AnimalDbContext context;
 
-    public Animal AddAnimal(Animal animal)
+    public AnimalService(AnimalDbContext animalDbContext)
     {
-        lock (_lock)
+        context = animalDbContext;
+    }
+
+    public async Task<Animal> AddAnimalAsync(AnimalRequest animalRequest)
+    {
+        var animal = (new Animal
         {
-            LoadFromFile();
-            if (_animals.Count < 1)
-                animal.Id = 1;
-            else
-                animal.Id = _animals.Max(a => a.Id) + 1;
-            _animals.Add(animal);
-            SaveToFile();
-            return animal;
-        }
+            Name = animalRequest.Name,
+            Type = animalRequest.Type
+        });
+        await context.Animals.AddAsync(animal);
+        await context.SaveChangesAsync();
+        return animal;
     }
-    public bool DeleteAnimal(int id)
+    public async Task DeleteAnimalAsync(Guid id)
     {
-        LoadFromFile();
-        var animal = _animals.FirstOrDefault(a => a.Id == id);
-        if (animal is not null)
-        {
-            _animals.Remove(animal);
-            SaveToFile();
-            return true;
-        }
-        return false;
+        var animal = await context.Animals.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (animal is null)
+            throw new KeyNotFoundException($"Animal {id} not found");
+
+        context.Animals.Remove(animal);
+        await context.SaveChangesAsync();
     }
-    public bool FeedAnimal(int id, int amountFood)
+    public async Task FeedAnimalAsync(Guid id, int amountFood)
     {
-        LoadFromFile();
-        var animal = _animals.FirstOrDefault(a => a.Id == id);
-        if (animal is not null)
-        {
-            animal.Energy += amountFood;
-            if (animal.Energy > 100)
-                animal.Energy = 100;
-            SaveToFile();
-            return true;
-        }
-        return false;
+        var animal = await context.Animals.FindAsync(id);
+
+        if (animal is null)
+            throw new KeyNotFoundException($"Animal {id} not found");
+
+        if (amountFood is < 1 or > 100)
+            throw new ArgumentException("Amount food should between 1 and 100");
+
+        animal.Energy = Math.Min(animal.Energy + amountFood, 100);
+        await context.SaveChangesAsync();
     }
-    public Animal? GetAnimal(int id)
+    public async Task<Animal> GetAnimalAsync(Guid id)
     {
-        LoadFromFile();
-        return _animals.FirstOrDefault(a => a.Id == id);
+        var animal = await context.Animals.FindAsync(id);
+        return animal ?? throw new KeyNotFoundException($"Animal {id} not found");
     }
-    public List<Animal> GetAnimals()
+    public async Task<List<Animal>> GetAnimalsAsync()
     {
-        LoadFromFile();
-        return _animals;
-    }
-    private void LoadFromFile()
-    {
-        lock (_lock)
-        {
-            if (File.Exists(_saveFileName))
-            {
-                var json = File.ReadAllText(_saveFileName);
-                _animals = JsonSerializer.Deserialize<List<Animal>>(json) ?? [];
-            }
-        }
-    }
-    private void SaveToFile()
-    {
-        var json = JsonSerializer.Serialize(_animals);
-        File.WriteAllText(_saveFileName, json);
+        return await context.Animals.ToListAsync();
     }
 }
